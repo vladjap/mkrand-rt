@@ -4,7 +4,7 @@
   "description": "socket io app",
   "main": "index.js",
   "engines": {
-    "node": "14.6.1"
+    "node": "14.6.x"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
