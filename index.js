@@ -317,6 +317,9 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('a user connected', socket.id);
+
+    socket.join('randomRoom');
+
     socket.on('disconnect', () => {
         console.log('user disconnected', socket.id);
     });
@@ -325,14 +328,24 @@ io.on('connection', (socket) => {
     // socket.on('chat message', (msg) => {
     //     console.log('message: ' + msg);
     // });
+
+    // socket.on('join', (room) => {
+    //     console.log(`Socket ${socket.id} joining ${room}`);
+    //     socket.join(room);
+    // });
     socket.on('chat message', (msg) => {
         console.log('started chat message')
         io.emit('chat message', msg);
     });
 
     socket.on('random running', (msg) => {
+        // console.log(data, 'data')
+        // const { message: msg, room} = data;
         console.log('started');
         if (msg) {
+            // const { message, room } = data;
+            // console.log(`msg: ${message}, room: ${room}`);
+            // io.to(room).emit('chat', message);
 
             setTimeout(() => {
                 let resetPlayers = numberOfAvailablePlayers === historyPlayer1.length;
@@ -366,13 +379,20 @@ io.on('connection', (socket) => {
 
                 // }
 
-                io.emit('random players', {
+                // io.emit('random players', {
+                //     randomData,
+                //     resetPlayers,
+                //     historyPlayer1,
+                //     historyPlayer2,
+                // });
+                io.to('randomRoom').emit('random players', {
                     randomData,
                     resetPlayers,
                     historyPlayer1,
                     historyPlayer2,
                 });
-                io.emit('random running', false);
+                // io.emit('random running', false);
+                io.to('randomRoom').emit('random running', false);
                 // history.push(randomData);
                 // console.log(historyPlayer1, 'historyPlayer1');
                 // console.log(historyPlayer2, 'historyPlayer2');
@@ -382,8 +402,11 @@ io.on('connection', (socket) => {
 
     });
     socket.on('random players', (msg) => {
-        io.emit('random players', msg);
+        // io.emit('random players', msg);
+        socket.to('randomRoom').emit('random players', msg);
     });
+
+    console.log(socket.rooms, "rooms");
 });
 
 const PORT = process.env.PORT ? process.env.PORT : 3000;
