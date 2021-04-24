@@ -270,7 +270,20 @@ const PlayersData = [
     },
 ];
 
+const getAvailablePlayers = () => {
+    if (!PlayersData) {
+        return null;
+    }
+    return PlayersData.filter(playerItem => playerItem?.available);
+}
 
+const getNumberOfAvailablePlayers = () => {
+    const availablePlayers = getAvailablePlayers();
+    if (!availablePlayers) {
+        return 0;
+    }
+    return availablePlayers.length;
+}
 
 const getRandomPlayer = () => {
     const avPlayerIds = PlayersData.filter(player => player?.available).map(player => player?.id);
@@ -287,6 +300,7 @@ const getPlayerById = (id) => {
     }
     return head(playerArray);
 }
+const numberOfAvailablePlayers = getNumberOfAvailablePlayers();
 
 const io = require('socket.io')(server, {
     cors: {
@@ -306,7 +320,8 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('user disconnected', socket.id);
     });
-
+    const historyPlayer1 = [];
+    const historyPlayer2 = [];
     // socket.on('chat message', (msg) => {
     //     console.log('message: ' + msg);
     // });
@@ -318,9 +333,49 @@ io.on('connection', (socket) => {
     socket.on('random running', (msg) => {
         console.log('started');
         if (msg) {
+
             setTimeout(() => {
-                io.emit('random players', {player1: getRandomPlayer(), player2: getRandomPlayer()});
+                let resetPlayers = numberOfAvailablePlayers === historyPlayer1.length;
+                if (resetPlayers) {
+                    historyPlayer1.splice(0, historyPlayer1.length);
+                    historyPlayer2.splice(0, historyPlayer2.length);
+                }
+                let randomPlayer1 = getRandomPlayer();
+                let randomPlayer2 = getRandomPlayer();
+                let doesExistsPlayer1 = historyPlayer1.includes(randomPlayer1);
+                let doesExistsPlayer2 = historyPlayer2.includes(randomPlayer2);
+
+                while(doesExistsPlayer1) {
+                    randomPlayer1 = getRandomPlayer();
+                    doesExistsPlayer1 = historyPlayer1.includes(randomPlayer1);
+                }
+
+                while(doesExistsPlayer2) {
+                    randomPlayer2 = getRandomPlayer();
+                    doesExistsPlayer2 = historyPlayer2.includes(randomPlayer2);
+                }
+
+                const randomData = {player1: randomPlayer1, player2: randomPlayer2};
+                // const doesExists = history.filter(historyItem => lodash.isEqual(historyItem, random))
+                // if (history.inc)
+                // if (!doesExists) {
+
+                historyPlayer1.push(randomPlayer1);
+                historyPlayer2.push(randomPlayer2);
+
+
+                // }
+
+                io.emit('random players', {
+                    randomData,
+                    resetPlayers,
+                    historyPlayer1,
+                    historyPlayer2,
+                });
                 io.emit('random running', false);
+                // history.push(randomData);
+                // console.log(historyPlayer1, 'historyPlayer1');
+                // console.log(historyPlayer2, 'historyPlayer2');
             }, 2000);
         }
         io.emit('random running', msg);
@@ -331,6 +386,7 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(process.env.PORT || 3000, () => {
-    console.log('listening on *:' + process.env.PORT);
+const PORT = process.env.PORT ? process.env.PORT : 3000;
+server.listen(PORT, () => {
+    console.log('listening on *:' + PORT);
 });
