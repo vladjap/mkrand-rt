@@ -29,9 +29,9 @@ const onDisconnect = () => {}
 
 const onConnection = (socket) => {
     socket.on('joinOrCreateAndJoinRoom', joinOrCreateAndJoinRoom);
-    socket.on('disconnect', onDisconnect);
     socket.on('chat message', chatMessage);
     socket.on('random running', randomRunning);
+    socket.on('disconnect', onDisconnect);
 };
 
 const application = (err) => {
