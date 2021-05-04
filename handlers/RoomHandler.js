@@ -28,12 +28,8 @@ module.exports = (io) => {
         });
     };
 
-    const readOrder = function (orderId, callback) {
-        // ...
-    };
 
     return {
         joinOrCreateAndJoinRoom,
-        readOrder
     }
 }
