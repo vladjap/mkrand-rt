@@ -1,0 +1,16 @@
+
+> socket-io-example@1.0.0 start /Users/vlad/sio
+> node index.js
+
+listening on *:3000
+a user connected R_LvLRdsuFHf4ivRAAAB
+Set(2) { 'R_LvLRdsuFHf4ivRAAAB', 'randomRoom' } rooms
+user disconnected R_LvLRdsuFHf4ivRAAAB
+a user connected 6WOV0zvfx6P3KT06AAAD
+Set(2) { '6WOV0zvfx6P3KT06AAAD', 'randomRoom' } rooms
+started
+[ 'grs' ] historyPlayer1
+[ 'shka' ] historyPlayer2
+started
+[ 'grs', 'frst' ] historyPlayer1
+[ 'shka', 'csscg' ] historyPlayer2

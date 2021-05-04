@@ -1,274 +1,17 @@
 const express = require('express');
 const app = express();
 const http = require('http');
+const cors = require('cors')
+const bodyParser = require('body-parser');
 const server = http.createServer(app);
+const mongoose = require('mongoose');
 const lodash = require('lodash');
 const random = lodash.random;
 const head = lodash.head;
-
-
-const joystick = {
-    BTN_CROSS: 'BTN_CROSS',
-    BTN_CIRCLE: 'BTN_CIRCLE',
-    BTN_TRIANGLE: 'BTN_TRIANGLE',
-    BTN_SQUARE: 'BTN_SQUARE',
-    BTN_LEFT: 'BTN_LEFT',
-    BTN_RIGHT: 'BTN_RIGHT',
-    BTN_UP: 'BTN_UP',
-    BTN_DOWN: 'BTN_DOWN',
-    BTN_R1: 'BTN_R1',
-    BTN_R2: 'BTN_R2',
-    BTN_L1: 'BTN_L1',
-    BTN_L2: 'BTN_L2',
-};
-
-const {
-    BTN_CIRCLE,
-    BTN_CROSS,
-    BTN_DOWN,
-    BTN_L1,
-    BTN_L2,
-    BTN_LEFT,
-    BTN_R1,
-    BTN_R2,
-    BTN_RIGHT,
-    BTN_SQUARE,
-    BTN_TRIANGLE,
-    BTN_UP,
-} = joystick;
-
-const PlayersData = [
-    {
-        id: 'shts',
-        name: 'Shang Tsung',
-        image: 'ShangTsungImage',
-        available: true,
-        kombos: [
-            {
-                name: 'test',
-                moveList: [BTN_CROSS, BTN_LEFT, BTN_SQUARE, BTN_TRIANGLE],
-            },
-            {
-                name: 'test',
-                moveList: [BTN_CIRCLE, BTN_DOWN, BTN_UP, BTN_TRIANGLE],
-            },
-        ],
-        specials: [
-            {
-                name: 'test',
-                moveList: [BTN_CROSS, BTN_LEFT, BTN_SQUARE, BTN_TRIANGLE],
-            },
-            {
-                name: 'test',
-                moveList: [BTN_CIRCLE, BTN_DOWN, BTN_UP, BTN_TRIANGLE],
-            },
-        ],
-    },
-    {
-        id: 'shka',
-        name: 'Shao Kahn',
-        image: 'ShaoKahn',
-        available: true,
-    },
-    {
-        id: 'frst',
-        name: 'Frost',
-        image: 'Frost',
-        available: true,
-    },
-    {
-        id: 'niwo',
-        name: 'Night Wolf',
-        image: 'NightWolf',
-        available: true,
-    },
-    {
-        id: 'jkr',
-        name: 'Joker',
-        image: 'Joker',
-        available: true,
-    },
-    {
-        id: 'jhca',
-        name: 'Johnny Cage',
-        image: 'JohnnyCage',
-        available: true,
-    },
-    {
-        id: 'sya',
-        name: 'Sonya',
-        image: 'Sonya',
-        available: true,
-    },
-    {
-        id: 'csscg',
-        name: 'Cassie Cage',
-        image: 'CassieCage',
-        available: true,
-    },
-    {
-        id: 'jx',
-        name: 'Jax Briggs',
-        image: 'Jax',
-        available: true,
-    },
-    {
-        id: 'spw',
-        name: 'Spawn',
-        image: 'Spawn',
-        available: true,
-    },
-    {
-        id: 'scrp',
-        name: 'Scorpion',
-        image: 'Scorpion',
-        available: true,
-    },
-    {
-        id: 'nbsab',
-        name: 'Noob Saibot',
-        image: 'NoobSaibot',
-        available: true,
-    },
-    {
-        id: 'brk',
-        name: 'Baraka',
-        image: 'Baraka',
-        available: true,
-    },
-    {
-        id: 'rdn',
-        name: 'Raiden',
-        image: 'Raiden',
-        available: true,
-    },
-    {
-        id: 'jqbgg',
-        name: 'Jacqui Briggs',
-        image: 'JacquiBriggs',
-        available: true,
-    },
-    {
-        id: 'sbzr',
-        name: 'Sub Zero',
-        image: 'SubZero',
-        available: true,
-    },
-    {
-        id: 'kn',
-        name: 'Kano',
-        image: 'Kano',
-        available: true,
-    },
-    {
-        id: 'kbl',
-        name: 'Kabal',
-        image: 'Kabal',
-        available: true,
-    },
-    {
-        id: 'likg',
-        name: 'Liu Kang',
-        image: 'Liu_Kang',
-        available: true,
-    },
-    {
-        id: 'ktn',
-        name: 'Kitana',
-        image: 'Kitana',
-        available: true,
-    },
-    {
-        id: 'knlo',
-        name: 'KungLao',
-        image: 'KungLao',
-        available: true,
-    },
-    {
-        id: 'jd',
-        name: 'Jade',
-        image: 'Jade',
-        available: true,
-    },
-    {
-        id: 'rbcp',
-        name: "Robocop",
-        image: 'Robocop',
-        available: false,
-    },
-    {
-        id: 'srlt',
-        name: "Skarlet",
-        image: 'Skarlet',
-        available: true,
-    },
-    {
-        id: 'erck',
-        name: "Erron Black",
-        image: 'ErronBlack',
-        available: true,
-    },
-    {
-        id: 'dvh',
-        name: "D'vorah",
-        image: 'Dvorah',
-        available: true,
-    },
-    {
-        id: 'kthn',
-        name: 'Kotal Kahn',
-        image: 'KotalKahn',
-        available: true,
-    },
-    {
-        id: 'shva',
-        name: 'Sheeva',
-        image: 'Sheeva',
-        available: false,
-    },
-    {
-        id: 'rmbo',
-        name: 'Rambo',
-        image: 'Rambo',
-        available: true,
-    },
-    {
-        id: 'trmnt',
-        name: 'Terminator',
-        image: 'Terminator',
-        available: true,
-    },
-    {
-        id: 'grs',
-        name: 'Geras',
-        image: 'Geras',
-        available: true,
-    },
-    {
-        id: 'klltr',
-        name: 'Kollector',
-        image: 'Kollector',
-        available: true,
-    },
-    {
-        id: 'sndl',
-        name: 'Sindel',
-        image: 'Sindel',
-        available: true,
-    },
-    {
-        id: 'ctrn',
-        name: 'Cetrion',
-        image: 'Cetrion',
-        available: true,
-    },
-    {
-        id: 'fjn',
-        name: 'Fujin',
-        image: 'Fujin',
-        available: false,
-    },
-];
+const PlayersData = require('./data');
+const Users = require('./models/UserModel');
+const Rooms = require('./models/RoomModel');
+const routes = require("./routes") // new
 
 const getAvailablePlayers = () => {
     if (!PlayersData) {
@@ -309,104 +52,247 @@ const io = require('socket.io')(server, {
     }
 });
 
+function makeid(length) {
+    var result           = [];
+    var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for ( var i = 0; i < length; i++ ) {
+        result.push(characters.charAt(Math.floor(Math.random() *
+            charactersLength)));
+    }
+    return result.join('');
+}
 
+// console.log(makeid(5));
+
+app.use(bodyParser.json());
+app.use(cors());
+
+// database connection
+
+mongoose.connect('mongodb://localhost:27017/realtimeProject',{useNewUrlParser:true},
+    function(err){
+        if(err){
+            throw err
+        }
+        console.log('Database connected');
+
+        // app.get('/get-room-data/:roomName', (req, res) => {
+        //     res.json({
+        //         roomName: req.params?.roomName
+        //     })
+        // });
+
+        app.use("/api", routes)
+
+        io.on('connection',(socket) => {
+            console.log('user connected')
+            socket.on('createUser',(data)=>{
+                // Users
+                const newUser = new Users({
+                    _id: makeid(24),
+                    name: data?.name,
+                    age: data?.age,
+                });
+                newUser.save((error) => {
+                    if (error) {
+                        // throw new Error('new user failed saving', error);
+                        console.log(error, 'error');
+                    }
+                });
+
+                // console.log(newUser, 'newUser');
+
+                socket.join(newUser._id);
+
+            });
+
+
+            //Rooms
+            socket.on('joinOrCreateAndJoinRoom',(data)=>{      // data will look like => {myID: "123123"}
+                console.log(data, 'datadata joinOrCreateAndJoinRoom');
+                Rooms.findOne({ 'name': data?.name }, 'name historyP1 historyP2', function (err, room) {
+                    if (err) return console.log(err);
+                    // console.log(room, 'room');
+
+                    if (!room) {
+                        const newRoom = new Rooms({
+                            _id: makeid(24),
+                            name: data?.name,
+                            historyP1: [],
+                            historyP2: [],
+                        });
+                        newRoom.save((error) => {
+                            if (error) {
+                                // throw new Error('new user failed saving', error);
+                                console.log(error, 'error');
+                            }
+                        });
+
+                        // console.log(newRoom, 'newRoom');
+
+                        socket.join(newRoom.name);
+                    } else {
+                        socket.join(room.name);
+                    }
+                });
+
+
+            });
+
+            // socket.on('updateRoomHistory', data => {
+            //     const filter = { name:  data?.name};
+            //     const update = { historyP1: data?.historyP1, historyP2: data?.historyP2 };
+            //
+            //     Rooms.findOneAndUpdate(filter, update).then(p => console.log(p, '<-----'));
+            //
+            // });
+
+
+            //OLD:
+
+            console.log('a user connected', socket.id);
+
+            // socket.join('randomRoom');
+
+            socket.on('disconnect', () => {
+                console.log('user disconnected', socket.id);
+            });
+            const historyPlayer1 = [];
+            const historyPlayer2 = [];
+            // socket.on('chat message', (msg) => {
+            //     console.log('message: ' + msg);
+            // });
+
+            // socket.on('join', (room) => {
+            //     console.log(`Socket ${socket.id} joining ${room}`);
+            //     socket.join(room);
+            // });
+            socket.on('chat message', (msg) => {
+                console.log('started chat message')
+                io.emit('chat message', msg);
+            });
+
+            socket.on('random running', (msg) => {
+                // console.log(data, 'data')
+                // const { message: msg, room} = data;
+                console.log('started');
+                if (msg?.status) {
+                    // const { message, room } = data;
+                    // console.log(`msg: ${message}, room: ${room}`);
+                    // io.to(room).emit('chat', message);
+                    console.log(msg, 'MSG');
+                    setTimeout(async () => {
+                        const roomData = await Rooms.findOne({ name: msg?.room });
+                        let historyP1 = Object.values(roomData.historyP1);
+                        let historyP2 = Object.values(roomData.historyP2);
+                        console.log( Object.values(historyP1), 'historyP1 toto');
+                        let resetPlayers = historyP1.length >= numberOfAvailablePlayers;
+                        console.log(resetPlayers, 'resetPlayers');
+                        if (resetPlayers) {
+                            historyP1.splice(0, historyP1.length);
+                            historyP2.splice(0, historyP2.length);
+                        }
+                        let randomPlayer1 = getRandomPlayer();
+                        let randomPlayer2 = getRandomPlayer();
+                        let doesExistsPlayer1 = historyP2.includes(randomPlayer1);
+                        let doesExistsPlayer2 = historyP2.includes(randomPlayer2);
+
+                        while(doesExistsPlayer1) {
+                            randomPlayer1 = getRandomPlayer();
+                            doesExistsPlayer1 = historyP1.includes(historyP1);
+                        }
+
+                        while(doesExistsPlayer2) {
+                            randomPlayer2 = getRandomPlayer();
+                            doesExistsPlayer2 = historyP2.includes(historyP2);
+                        }
+
+                        const randomData = {player1: randomPlayer1, player2: randomPlayer2};
+                        // const doesExists = history.filter(historyItem => lodash.isEqual(historyItem, random))
+                        // if (history.inc)
+                        // if (!doesExists) {
+
+                        historyP1.push(randomPlayer1);
+                        historyP2.push(randomPlayer2);
+
+
+                        // }
+
+                        // io.emit('random players', {
+                        //     randomData,
+                        //     resetPlayers,
+                        //     historyPlayer1,
+                        //     historyPlayer2,
+                        // });
+
+                        roomData.historyP1 = historyP1;
+                        roomData.historyP2 = historyP2;
+                        roomData.save();
+                        // roomData.update()
+                        console.log(roomData, 'roomData');
+
+                        // console.log('DA DA DA', {
+                        //     randomData,
+                        //     resetPlayers,
+                        //     historyPlayer1,
+                        //     historyPlayer2,
+                        //     room: msg?.room
+                        // });
+                        io.to(msg?.room).emit('random players', {
+                            randomData,
+                            resetPlayers,
+                            historyP1,
+                            historyP2,
+                            room: msg?.room
+                        });
+                        // io.emit('random running', false);
+                        socket.to(msg?.room).emit('random running', {
+                            status: false
+                        });
+                        // history.push(randomData);
+                        // console.log(historyPlayer1, 'historyPlayer1');
+                        // console.log(historyPlayer2, 'historyPlayer2');
+                    }, 2000);
+                }
+                socket.to(msg?.room).emit('random running', msg);
+
+            });
+            socket.on('random players', (msg) => {
+                // io.emit('random players', msg);
+                console.log(msg, 'msgmsgmsgmsgmsgmsg');
+                socket.to('randomRoom').emit('random players', msg);
+            });
+
+            // console.log(socket.rooms, "rooms");
+
+        })
+
+        Users.watch().on('change',(change)=>{
+            // console.log('Something has changed', change)
+            io.to(change.documentKey._id).emit('changes',change)
+        });
+
+        Rooms.watch().on('change',(change)=>{
+            console.log('Something has changed in rooms', change);
+            if (change?.operationType === 'insert') {
+                io.to(change.fullDocument.name).emit('roomsChanged',change.fullDocument);
+            } else if (change?.operationType === 'update') {
+                Rooms.findOne({ '_id': change?.documentKey?._id }, 'name historyP1 historyP2', function (err, room) {
+                    if (err) return console.log(err);
+                    // console.log(room, 'room');
+                    if (room) {
+                        io.to(room.name).emit('roomsChanged', room);
+                    }
+                });
+            }
+
+        });
+
+    })
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
-});
-
-io.on('connection', (socket) => {
-    console.log('a user connected', socket.id);
-
-    socket.join('randomRoom');
-
-    socket.on('disconnect', () => {
-        console.log('user disconnected', socket.id);
-    });
-    const historyPlayer1 = [];
-    const historyPlayer2 = [];
-    // socket.on('chat message', (msg) => {
-    //     console.log('message: ' + msg);
-    // });
-
-    // socket.on('join', (room) => {
-    //     console.log(`Socket ${socket.id} joining ${room}`);
-    //     socket.join(room);
-    // });
-    socket.on('chat message', (msg) => {
-        console.log('started chat message')
-        io.emit('chat message', msg);
-    });
-
-    socket.on('random running', (msg) => {
-        // console.log(data, 'data')
-        // const { message: msg, room} = data;
-        console.log('started');
-        if (msg) {
-            // const { message, room } = data;
-            // console.log(`msg: ${message}, room: ${room}`);
-            // io.to(room).emit('chat', message);
-
-            setTimeout(() => {
-                let resetPlayers = numberOfAvailablePlayers === historyPlayer1.length;
-                if (resetPlayers) {
-                    historyPlayer1.splice(0, historyPlayer1.length);
-                    historyPlayer2.splice(0, historyPlayer2.length);
-                }
-                let randomPlayer1 = getRandomPlayer();
-                let randomPlayer2 = getRandomPlayer();
-                let doesExistsPlayer1 = historyPlayer1.includes(randomPlayer1);
-                let doesExistsPlayer2 = historyPlayer2.includes(randomPlayer2);
-
-                while(doesExistsPlayer1) {
-                    randomPlayer1 = getRandomPlayer();
-                    doesExistsPlayer1 = historyPlayer1.includes(randomPlayer1);
-                }
-
-                while(doesExistsPlayer2) {
-                    randomPlayer2 = getRandomPlayer();
-                    doesExistsPlayer2 = historyPlayer2.includes(randomPlayer2);
-                }
-
-                const randomData = {player1: randomPlayer1, player2: randomPlayer2};
-                // const doesExists = history.filter(historyItem => lodash.isEqual(historyItem, random))
-                // if (history.inc)
-                // if (!doesExists) {
-
-                historyPlayer1.push(randomPlayer1);
-                historyPlayer2.push(randomPlayer2);
-
-
-                // }
-
-                // io.emit('random players', {
-                //     randomData,
-                //     resetPlayers,
-                //     historyPlayer1,
-                //     historyPlayer2,
-                // });
-                io.to('randomRoom').emit('random players', {
-                    randomData,
-                    resetPlayers,
-                    historyPlayer1,
-                    historyPlayer2,
-                });
-                // io.emit('random running', false);
-                io.to('randomRoom').emit('random running', false);
-                // history.push(randomData);
-                // console.log(historyPlayer1, 'historyPlayer1');
-                // console.log(historyPlayer2, 'historyPlayer2');
-            }, 2000);
-        }
-        io.emit('random running', msg);
-
-    });
-    socket.on('random players', (msg) => {
-        // io.emit('random players', msg);
-        socket.to('randomRoom').emit('random players', msg);
-    });
-
-    console.log(socket.rooms, "rooms");
 });
 
 const PORT = process.env.PORT ? process.env.PORT : 3000;
