@@ -24,8 +24,8 @@ app.use(bodyParser.json());
 app.use(cors());
 
 // database connection
-// mongoose.connect('mongodb://localhost:27017/realtimeProject',{useNewUrlParser:true},
-mongoose.connect('mongodb://144.217.30.147:27017/realtimeProject',{useNewUrlParser:true},
+mongoose.connect('mongodb://localhost:27017/realtimeProject',{useNewUrlParser:true},
+// mongoose.connect('mongodb://144.217.30.147:27017/realtimeProject',{useNewUrlParser:true},
     function(err){
         if (err) {
             throw err
@@ -106,17 +106,21 @@ mongoose.connect('mongodb://144.217.30.147:27017/realtimeProject',{useNewUrlPars
                         }
                         let randomPlayer1 = playerUtils.getRandomPlayer();
                         let randomPlayer2 = playerUtils.getRandomPlayer();
-                        let doesExistsPlayer1 = historyP2.includes(randomPlayer1);
+                        let doesExistsPlayer1 = historyP1.includes(randomPlayer1);
                         let doesExistsPlayer2 = historyP2.includes(randomPlayer2);
+
+                        if (doesExistsPlayer1) {
+                            console.log(randomPlayer1, 'randomPlayer1');
+                        }
 
                         while(doesExistsPlayer1) {
                             randomPlayer1 = playerUtils.getRandomPlayer();
-                            doesExistsPlayer1 = historyP1.includes(historyP1);
+                            doesExistsPlayer1 = historyP1.includes(randomPlayer1);
                         }
 
                         while(doesExistsPlayer2) {
                             randomPlayer2 = playerUtils.getRandomPlayer();
-                            doesExistsPlayer2 = historyP2.includes(historyP2);
+                            doesExistsPlayer2 = historyP2.includes(randomPlayer2);
                         }
 
                         const randomData = {player1: randomPlayer1, player2: randomPlayer2};
